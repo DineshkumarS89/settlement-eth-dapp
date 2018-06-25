@@ -55,31 +55,43 @@ router.get('/',(req,res,next) => {
 
    
 function getSettlementEvent(reqWindowId) {
-	console.log("Getting Settlement Event");
-	console.log(reqWindowId);
-	  var eventCount;
-	  var i;
-	  var response = Array();
-	 
-	  const web3 = new Web3( new Web3.providers.HttpProvider("http://localhost:8545") );
-	  EventContract.setProvider(web3.currentProvider);
-	  EventContract.defaults({from: web3.eth.accounts[0],gas:6500000000});
-	  console.log(deployed_address);
-	  let ins =  EventContract.at(deployed_address);
-	       ins.getSettlementEventCountByWindowId(parseInt(reqWindowId)).then(function(result){
-	    		for(i=0;i<parseInt(result);i++){
-	   	    			ins.getSettlementEventByWindowId(parseInt(reqWindowId),parseInt(i)).then(function(output){
-	   	    				console.log(output);
-	   	    				response[i]= output;
-	   	    				console.log("respomse"+response[i]);
-	   	    			 return response;
-	   	    			});
-	    		}
-	    	}).catch(function(err){ 
-	        console.error("ERROR! " + err.message)
-	    })
-	   console.log("Response"+ response);
-	 
+        console.log("Getting Settlement Event");
+        console.log(reqWindowId);
+          var eventCount;
+          var i;
+          var response = Array();
+          var output;
+
+          const web3 = new Web3( new Web3.providers.HttpProvider("http://localhost:8545") );
+          EventContract.setProvider(web3.currentProvider);
+          EventContract.defaults({from: web3.eth.accounts[0],gas:6500000000});
+          console.log(deployed_address);
+          let ins =  EventContract.at(deployed_address);
+               //ins.getSettlementEventCountByWindowId(parseInt(reqWindowId)).then(function(result){
+                //      for(i=0;i<parseInt(result);i++){
+                  //                    ins.getSettlementEventByWindowId(parseInt(reqWindowId),parseInt(i)).then(function(output){
+                    //                          console.log(output);
+                    //                          response[i]= output;
+                    //                          console.log("respomse"+response[i]);
+                    //                   return response;
+                    //                  });
+                //      }
+                //}).catch(function(err){
+                //console.error("ERROR! " + err.message)
+           // })
+
+           var result = ins.getSettlementEventCountByWindowId(parseInt(reqWindowId));
+
+           for(i=0;i<parseInt(result);i++)
+           {
+                output = ins.getSettlementEventByWindowId(parseInt(reqWindowId),parseInt(i));
+                console.log("response = " + output);
+                response[i] = output;
+           }
+
+           console.log("Response"+ response);
+           return response;
+
   };
 
   
